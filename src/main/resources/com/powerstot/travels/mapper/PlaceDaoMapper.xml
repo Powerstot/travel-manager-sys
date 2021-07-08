@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.powerstot.travels.dao.PlaceDao">
+
+    <!--分页查询Place对象-->
+    <select id="findByProvinceIdPage" resultType="Place">
+        select * from t_place
+        where provinceid = #{provinceId}
+        order by id
+        limit #{start}, #{rows}
+    </select>
+
+    <!--查询该页面有多少条-->
+    <select id="findByProvinceIdTotal" resultType="Integer">
+        select count(id) from t_place where provinceid = #{provinceId}
+    </select>
+
+    <!--保存Place信息-->
+    <insert id="save" parameterType="Place" useGeneratedKeys="true" keyProperty="id">
+        insert into t_place values(#{id}, #{name}, #{picPath}, #{hotTime}, #{hotTicket}, #{dimTicket}, #{placeDes}, #{provinceId})
+    </insert>
+
+    <!--删除Place信息-->
+    <delete id="delete" parameterType="String">
+        delete from t_place where id = #{id}
+    </delete>
+    <!--根据placeId查找place-->
+    <select id="findOne" parameterType="String" resultType="Place">
+        select * from t_place where id = #{id}
+    </select>
+    <!--修改景点信息-->
+    <update id="update" parameterType="Place">
+        update t_place set
+            name = #{name},
+            picpath = #{picPath},
+            hottime = #{hotTime},
+            hotticket = #{hotTicket},
+            dimticket = #{dimTicket},
+            placedes = #{placeDes},
+            provinceid = #{provinceId}
+        where id = #{id}
+    </update>
+</mapper>

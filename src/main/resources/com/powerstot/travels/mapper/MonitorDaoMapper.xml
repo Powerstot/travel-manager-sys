@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.powerstot.travels.dao.MonitorDao">
+
+    <select id="checkedCount" resultType="Integer">
+        select count(*) from t_monitor where ischecked = true
+    </select>
+
+    <select id="unCheckedCount" resultType="Integer">
+        select count(*) from t_monitor where ischecked = false
+    </select>
+    
+    <!--查询 日期对应的监控记录数的对象的List集合-->
+    <select id="findMonitorTotal" resultType="MonitorCountDate">
+        select count(*) count, date_format(t_monitor.shottime,'%Y-%m-%d') date
+        from t_monitor
+        group by date_format(t_monitor.shottime,'%Y-%m-%d');
+    </select>
+
+    <!--保存Monitor对象-->
+    <insert id="save" parameterType="Monitor" useGeneratedKeys="true" keyProperty="id">
+        insert into t_monitor values(#{id}, #{picPath}, #{shotTime}, #{isChecked})
+    </insert>
+
+    <!--分页查询所有-->
+    <select id="findByPage" resultType="Monitor">
+        select * from t_monitor
+        <where>
+            <if test="date != null">
+                and shottime like CONCAT('%', #{date}, '%')
+            </if>
+        </where>
+        order by id
+        limit #{start}, #{rows}
+    </select>
+    <!--查询条数-->
+    <select id="findTotals" resultType="Integer">
+        select count(id) from t_monitor
+        <where>
+            <if test="date != null">
+                and shottime like CONCAT('%', #{date}, '%')
+            </if>
+        </where>
+    </select>
+
+    <update id="update" parameterType="Monitor">
+        update t_monitor set ischecked = #{isChecked} where id = #{id}
+    </update>
+
+    <delete id="delete" parameterType="String">
+        delete from t_monitor where id = #{id}
+    </delete>
+</mapper>
